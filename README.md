@@ -1,20 +1,32 @@
 # AI-Powered Resume Scorer
+
+> ?? **Live Portfolio:** Part of [**ROHAN S &mdash; Engineering Portfolio**](https://d1eab3cbba80ae.lhr.life/) &bull; [Executive Resume](https://d1eab3cbba80ae.lhr.life/resume)
+
 **Author:** ROHAN S ([rohans2596@gmail.com](mailto:rohans2596@gmail.com)) &bull; Chennai, India
 
 An NLP-powered text processing engine and interactive web application that scores candidate resumes against target job descriptions by extracting required skills, computing TF-IDF cosine semantic similarity, and identifying actionable skill gaps.
 
 ## 🚀 Key Engineering Specifications
+
+> ?? **Live Portfolio:** Part of [**ROHAN S &mdash; Engineering Portfolio**](https://d1eab3cbba80ae.lhr.life/) &bull; [Executive Resume](https://d1eab3cbba80ae.lhr.life/resume)
+
 - **NLP Text Tokenization:** Custom stop-word filtering, regex sanitization, and technical vocabulary n-gram extraction.
 - **Taxonomy Skill Matching:** Rule-based and semantic extraction across languages (Python, Java, C, JavaScript), AI/ML tools (Neural Networks, NumPy, NLP), and developer tooling.
 - **Cosine Semantic Similarity:** Vector space comparison measuring linguistic and contextual overlap between job requirements and candidate profiles.
 - **Actionable Gap Analysis:** Immediate diagnostic categorization of matched qualifications vs missing prerequisites.
 
 ## 🛠 File Structure
+
+> ?? **Live Portfolio:** Part of [**ROHAN S &mdash; Engineering Portfolio**](https://d1eab3cbba80ae.lhr.life/) &bull; [Executive Resume](https://d1eab3cbba80ae.lhr.life/resume)
+
 - `scorer.py` &mdash; Python text-processing, vector similarity, and skill extraction module.
 - `index.html` &mdash; Interactive real-time browser tester with pre-loaded candidate benchmarks and scoring dashboard.
 - `package.json` &mdash; Project metadata.
 
 ## 💻 Run & Verify
+
+> ?? **Live Portfolio:** Part of [**ROHAN S &mdash; Engineering Portfolio**](https://d1eab3cbba80ae.lhr.life/) &bull; [Executive Resume](https://d1eab3cbba80ae.lhr.life/resume)
+
 ```bash
 python scorer.py
 ```
