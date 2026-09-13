@@ -1,0 +1,9 @@
+{
+  "name": "ai-resume-scorer",
+  "version": "1.0.0",
+  "description": "AI-Powered Resume Scorer utilizing NLP text-processing, TF-IDF cosine similarity, keyword extraction, and skill-gap analysis.",
+  "author": "ROHAN S <rohans2596@gmail.com>",
+  "scripts": {
+    "start": "node ../../serve.js"
+  }
+}

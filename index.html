@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Resume Scorer &mdash; ROHAN S</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #090a10;
+      --card: #10121d;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #ff3811;
+      --accent-green: #10b981;
+      --accent-blue: #00d8ff;
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.65);
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.app-nav {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(14, 16, 26, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-nlp {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .main-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 380px;
+      gap: 18px;
+      padding: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .panel-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .panel-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .btn-chip-sm {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-chip-sm:hover {
+      background: rgba(255, 56, 17, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 280px;
+      background: #080911;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-analyze {
+      background: linear-gradient(135deg, var(--accent), #ff6a00);
+      border: none;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(255, 56, 17, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-analyze:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(255, 56, 17, 0.55);
+    }
+
+    .score-hero-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .score-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 6px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 12px;
+      box-shadow: 0 0 25px rgba(255, 56, 17, 0.35);
+    }
+
+    .metric-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    .skills-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .tag-matched {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .tag-missing {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-nav">
+    <div class="brand-title">
+      <span>ROHAN S</span>
+      <span style="color: rgba(255,255,255,0.4);">&bull;</span>
+      <span>AI-Powered Resume Scorer</span>
+      <span class="badge-nlp">Python &bull; NLP &bull; TF-IDF Cosine</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <a href="../../projects.html" style="color: var(--text-muted); text-decoration: none; font-size: 13px;">&larr; Projects</a>
+      <a href="../../resume.html" style="color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 700;">Resume</a>
+    </div>
+  </header>
+
+  <div class="main-grid">
+    <!-- Resume Input Panel -->
+    <div class="panel-box">
+      <div class="panel-header">
+        <span class="panel-title">1. Candidate Resume</span>
+        <button class="btn-chip-sm" id="btn-load-rohan">Load Rohan's Resume</button>
+      </div>
+      <textarea id="resume-text" placeholder="Paste resume plain text here or click 'Load Rohan's Resume' above..."></textarea>
+    </div>
+
+    <!-- Job Description Input Panel -->
+    <div class="panel-box">
+      <div class="panel-header">
+        <span class="panel-title">2. Target Job Description</span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-chip-sm" id="btn-load-jd1">AI-ML Intern</button>
+          <button class="btn-chip-sm" id="btn-load-jd2">Full-Stack Dev</button>
+        </div>
+      </div>
+      <textarea id="jd-text" placeholder="Paste job description qualifications, responsibilities, and required skill keywords here..."></textarea>
+      <button class="btn-analyze" id="btn-score">
+        <span>⚡ Analyze Relevance &amp; Match Skills</span>
+      </button>
+    </div>
+
+    <!-- NLP Scoring & Gap Report Panel -->
+    <div class="panel-box">
+      <div class="panel-header">
+        <span class="panel-title">3. Relevance Report</span>
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">NLP Analysis</span>
+      </div>
+
+      <div class="score-hero-box">
+        <div class="score-circle" id="disp-score">92%</div>
+        <div style="font-size: 14px; font-weight: 700; color: #ffffff;" id="disp-verdict">Strong Candidate Match</div>
+        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;" id="disp-subtitle">
+          High alignment across core technical competencies.
+        </div>
+      </div>
+
+      <div class="metric-bar-group">
+        <div class="bar-row">
+          <div class="bar-labels">
+            <span>Skill Keyword Coverage</span>
+            <span id="disp-skill-pct">90%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="fill-skill" style="width: 90%; background: #10b981;"></div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-labels">
+            <span>Semantic Cosine Similarity</span>
+            <span id="disp-cosine-pct">84%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="fill-cosine" style="width: 84%; background: #00d8ff;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">
+          Matching Skills Detected (<span id="count-matched">6</span>)
+        </div>
+        <div class="skills-tag-cloud" id="box-matched">
+          <span class="tag-matched">Python</span>
+          <span class="tag-matched">Neural Networks</span>
+          <span class="tag-matched">NumPy</span>
+          <span class="tag-matched">Git</span>
+          <span class="tag-matched">Data Structures</span>
+          <span class="tag-matched">Algorithms</span>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">
+          Identified Skill Gaps (<span id="count-missing">1</span>)
+        </div>
+        <div class="skills-tag-cloud" id="box-missing">
+          <span class="tag-missing">Docker</span>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 12px;">
+        <a href="scorer.py" target="_blank" class="btn-chip-sm" style="display: block; text-align: center; text-decoration: none; padding: 8px;">
+          View Python scorer.py Source &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const resumeInput = document.getElementById('resume-text');
+      const jdInput = document.getElementById('jd-text');
+      const btnScore = document.getElementById('btn-score');
+      const btnLoadRohan = document.getElementById('btn-load-rohan');
+      const btnLoadJd1 = document.getElementById('btn-load-jd1');
+      const btnLoadJd2 = document.getElementById('btn-load-jd2');
+
+      const dispScore = document.getElementById('disp-score');
+      const dispVerdict = document.getElementById('disp-verdict');
+      const dispSubtitle = document.getElementById('disp-subtitle');
+      const dispSkillPct = document.getElementById('disp-skill-pct');
+      const dispCosinePct = document.getElementById('disp-cosine-pct');
+      const fillSkill = document.getElementById('fill-skill');
+      const fillCosine = document.getElementById('fill-cosine');
+      const boxMatched = document.getElementById('box-matched');
+      const boxMissing = document.getElementById('box-missing');
+      const countMatched = document.getElementById('count-matched');
+      const countMissing = document.getElementById('count-missing');
+
+      const ROHAN_RESUME = `ROHAN S
+Aspiring Software Engineer
+Contact: +91 93616 54330 | rohans2596@gmail.com | Chennai, India
+LinkedIn | GitHub
+
+SUMMARY
+Computer Engineering undergraduate skilled in Python, Java, and C, with hands-on experience building ML systems from first principles and full-stack web applications. Seeking an internship or entry-level Software Engineering / AI-ML role.
+
+EDUCATION
+2024 - 2028 | B.E. Computer Engineering | CGPA: 7.5 / 10
+
+SKILLS
+• Python, Java, C
+• HTML, CSS, JavaScript
+• Full-stack development
+• Neural networks & NumPy
+• NLP basics
+• AI tooling & prompt engineering
+• Git / GitHub
+• Data structures & algorithms
+
+INTERNSHIP EXPERIENCE
+Technical Department Intern - Sriram Finance
+• Worked with technical department, gaining exposure to internal systems, tools, and technical workflows.
+• Assisted the team with technical tasks, building hands-on experience.
+
+AI & AI Tools Intern - Mipy Semiconductor
+• Gained hands-on exposure to AI concepts and modern AI tools within semiconductor industry setting.
+• Explored practical applications of AI tooling to support team workflows.
+
+PROJECTS
+Neural Network from Scratch (Python, NumPy)
+• Built a fully-connected feedforward neural network from first principles without high-level ML frameworks, implementing forward propagation, backpropagation, and gradient descent manually.
+• Implemented weight initialization, activation functions (ReLU/Sigmoid), and loss functions (MSE/Cross-Entropy).
+
+AI-Powered Resume Scorer (Python, NLP)
+• Developed a tool that scores a resume against a job description by extracting and comparing key skills, keywords, and qualifications.
+• Applied text-processing and similarity-scoring techniques to generate an actionable relevance score and highlight skill gaps.`;
+
+      const JD_AIML = `Position: Software Engineering / AI-ML Intern
+Company: DeepTech Innovations
+Location: Chennai / Remote
+
+Key Requirements:
+• Strong foundation in Python and object-oriented programming.
+• Hands-on experience with Neural Networks, NumPy, and machine learning fundamentals.
+• Familiarity with NLP basics and prompt engineering.
+• Solid understanding of Data Structures and Algorithms.
+• Version control experience with Git and GitHub.
+• Ability to build and troubleshoot code from first principles.`;
+
+      const JD_FULLSTACK = `Position: Junior Full-Stack Web Developer
+Company: CloudScale Labs
+
+Requirements:
+• Proficiency in JavaScript, HTML5, CSS, and modern web development.
+• Familiarity with Python or Java backend services.
+• Experience building full-stack web applications and integrating APIs.
+• Understanding of Data Structures, Algorithms, and Git version control.
+• Exposure to Docker containerization and cloud environments is a bonus.`;
+
+      // Skill Taxonomy
+      const SKILLS = [
+        "python", "java", "c", "javascript", "html", "css", "full-stack development",
+        "neural networks", "numpy", "nlp", "ai tooling", "prompt engineering",
+        "git", "github", "data structures", "algorithms", "docker", "react", "sql", "machine learning"
+      ];
+
+      function extractSkills(text) {
+        const lower = text.toLowerCase();
+        return SKILLS.filter(s => lower.includes(s));
+      }
+
+      function tokenize(text) {
+        return text.toLowerCase().replace(/[^a-z0-9]/g, ' ').split(/\s+/).filter(w => w.length > 2);
+      }
+
+      function cosineSim(t1, t2) {
+        const freq1 = {}, freq2 = {};
+        t1.forEach(w => freq1[w] = (freq1[w] || 0) + 1);
+        t2.forEach(w => freq2[w] = (freq2[w] || 0) + 1);
+
+        const all = new Set([...Object.keys(freq1), ...Object.keys(freq2)]);
+        let dot = 0, m1 = 0, m2 = 0;
+        all.forEach(w => {
+          const v1 = freq1[w] || 0;
+          const v2 = freq2[w] || 0;
+          dot += v1 * v2;
+          m1 += v1 * v1;
+          m2 += v2 * v2;
+        });
+        if (!m1 || !m2) return 0;
+        return dot / (Math.sqrt(m1) * Math.sqrt(m2));
+      }
+
+      function analyze() {
+        const rText = resumeInput.value.trim();
+        const jText = jdInput.value.trim();
+        if (!rText || !jText) return;
+
+        const rSkills = extractSkills(rText);
+        const jSkills = extractSkills(jText);
+
+        const matched = jSkills.filter(s => rSkills.includes(s));
+        const missing = jSkills.filter(s => !rSkills.includes(s));
+
+        const rTokens = tokenize(rText);
+        const jTokens = tokenize(jText);
+        const cos = cosineSim(rTokens, jTokens);
+
+        const skillCoverage = matched.length / Math.max(1, jSkills.length);
+        const finalScore = Math.round((skillCoverage * 0.65 + cos * 0.35) * 100);
+
+        dispScore.textContent = finalScore + '%';
+        dispSkillPct.textContent = Math.round(skillCoverage * 100) + '%';
+        dispCosinePct.textContent = Math.round(cos * 100) + '%';
+
+        fillSkill.style.width = Math.round(skillCoverage * 100) + '%';
+        fillCosine.style.width = Math.round(cos * 100) + '%';
+
+        if (finalScore >= 80) {
+          dispScore.style.borderColor = '#10b981';
+          dispVerdict.textContent = 'Exceptional Candidate Match';
+          dispSubtitle.textContent = 'Candidate meets or exceeds critical role specifications.';
+        } else if (finalScore >= 60) {
+          dispScore.style.borderColor = '#00d8ff';
+          dispVerdict.textContent = 'Competitive Candidate Match';
+          dispSubtitle.textContent = 'Strong baseline with a few minor keyword gaps.';
+        } else {
+          dispScore.style.borderColor = '#ff3811';
+          dispVerdict.textContent = 'Moderate Match';
+          dispSubtitle.textContent = 'Additional domain-specific keywords recommended.';
+        }
+
+        countMatched.textContent = matched.length;
+        boxMatched.innerHTML = matched.map(m => `<span class="tag-matched">${m.toUpperCase()}</span>`).join('');
+
+        countMissing.textContent = missing.length;
+        boxMissing.innerHTML = missing.length ? missing.map(m => `<span class="tag-missing">${m.toUpperCase()}</span>`).join('') : '<span style="color: #10b981; font-size: 11px;">Zero missing skills! Complete coverage.</span>';
+      }
+
+      btnLoadRohan.addEventListener('click', () => {
+        resumeInput.value = ROHAN_RESUME;
+        analyze();
+      });
+
+      btnLoadJd1.addEventListener('click', () => {
+        jdInput.value = JD_AIML;
+        analyze();
+      });
+
+      btnLoadJd2.addEventListener('click', () => {
+        jdInput.value = JD_FULLSTACK;
+        analyze();
+      });
+
+      btnScore.addEventListener('click', analyze);
+
+      // Initial preload
+      resumeInput.value = ROHAN_RESUME;
+      jdInput.value = JD_AIML;
+      analyze();
+    })();
+  </script>
+</body>
+</html>
